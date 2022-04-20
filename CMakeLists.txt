@@ -4,22 +4,23 @@ project(free_store VERSION 1.0)
 # -Wconversion currently has many warnings due to issue in libcriterion
 # see
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99 -Wall -Wextra")
+set(CMAKE_C_STANDARD 11)
 
 include(CTest)
-# tell to use clang
-set(C_SRCS  # all non-main source files used by the pure C version
+
+set(C_SRCS  # all non-main source files
   create_arrays.c
   int_array.c
-  main.c
 )
-set(CMAKE_C_STANDARD 11)
-add_executable(${PROJECT_NAME} ${C_SRCS})
 
-add_executable(int_array_test int_array.c int_array_test.c)
-add_executable(create_arrays_test create_arrays.c create_arrays_test.c)
-target_link_libraries(int_array_test criterion)
-target_link_libraries(create_arrays_test criterion)
-add_test(NAME int_array_test
-         COMMAND int_array_test)
-add_test(NAME create_arrays_test
-         COMMAND create_arrays_test)
+add_executable(${PROJECT_NAME} main.c ${C_SRCS})
+
+foreach(sourcefile ${C_SRCS})
+  string(REPLACE ".c" "_test.c" testfile ${sourcefile})
+  string(REPLACE ".c" "" testexecutable ${testfile})
+  message(STATUS "${sourcefile} + ${testfile} => ${testexecutable}")
+  add_executable(${testexecutable} ${sourcefile} ${testfile})
+  target_link_libraries(${testexecutable} criterion)
+  add_test(NAME ${testexecutable}
+           COMMAND ${testexecutable})
+endforeach()
