@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.18)
 project(free_store VERSION 1.0)
 
 # -Wconversion currently has many warnings due to issue in libcriterion
-# see
+# see https://github.com/Snaipe/Criterion/discussions/441
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99 -Wall -Wextra")
 set(CMAKE_C_STANDARD 11)
 
